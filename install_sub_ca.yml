@@ -1,0 +1,4 @@
+- name: "Install sub CA"
+  hosts: sub_ca
+  roles:
+    - sub_ca

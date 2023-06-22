@@ -1,0 +1,29 @@
+# code: language=ansible
+---
+sub_ca_ca_user: "ca"
+sub_ca_ca_group: "ca"
+sub_ca_ca_name: "s1-sub-ca-01"
+sub_ca_ca_domain: "nokogerra.lab"
+sub_ca_country: "RU"
+sub_ca_organization: "NOKOGERRA-LAB"
+sub_ca_cn: "s1-sub-ca-01"
+sub_ca_cert_days: "1095"
+sub_ca_crl_days: "7"
+sub_ca_key_bits: "2048"
+sub_ca_encrypt_key: "yes"
+sub_ca_certs_name_constraints:
+  permitted:
+    - "DNS.0=nokogerra.lab"
+    - "DNS.1=nokogerra2.lab"
+  excluded:
+    - "IP.0=0.0.0.0/0.0.0.0"
+    - "IP.1=0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0"
+sub_ca_gen_crl_scheduler:
+  minute: "0"
+  hour: "*"
+  day: "*"
+  month: "*"
+sub_ca_root_ca_user: "ca"
+sub_ca_root_ca_group: "ca"
+sub_ca_root_ca_name: "s1-root-ca-01"
+sub_ca_is_root_ca_key_encrypted: "yes"

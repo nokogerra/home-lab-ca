@@ -1,0 +1,45 @@
+# code: language=ansible
+---
+- name: "Install apache2 web-server for CRT and CRL publishing"
+  ansible.builtin.apt:
+    name: apache2
+    state: present
+    update_cache: true
+
+- name: "Add a ca_user to apache group (so he will be able to publish CRT and CRL in /var/www/html"
+  ansible.builtin.user:
+    name: "{{ sub_ca_ca_user }}"
+    groups: www-data
+    append: true
+
+- name: "Modify /var/www permissions to allow www-data group make changes"
+  ansible.builtin.file:
+    path: "/var/www/html"
+    mode: "0775"
+    owner: "www-data"
+    group: "www-data"
+    recurse: true
+
+- name: "Add www-data user to ca_group (so www-data will be able to read CRL and CRTs)"
+  ansible.builtin.user:
+    name: "www-data"
+    groups: "{{ sub_ca_ca_group }}"
+    append: true
+
+- name: "Make symlinks for sub CA CRL, CRT and certs directory"
+  ansible.builtin.file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    owner: "{{ sub_ca_ca_user }}"
+    group: "{{ sub_ca_ca_group }}"
+  loop:
+    - { src: "/ca/{{ sub_ca_ca_name }}.crl", dest: "/var/www/html/{{ sub_ca_ca_name }}.crl" }
+    - { src: "/ca/certs/{{ sub_ca_ca_name }}.crt", dest: "/var/www/html/{{ sub_ca_ca_name }}.crt" }
+    - { src: "/ca/certs", dest: "/var/www/html/certs"}
+
+- name: "Restart apache2"
+  ansible.builtin.service:
+    name: apache2
+    enabled: true
+    state: restarted

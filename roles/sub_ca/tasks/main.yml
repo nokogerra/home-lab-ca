@@ -1,0 +1,25 @@
+# code: language=ansible
+---
+- name: "Ask for a passphrases if sub CA private key must be encrypted and/or if root CA key is encrypted"
+  ansible.builtin.include_tasks: passphrase.yml
+
+- name: "Make CA directory structure and CA DB files"
+  ansible.builtin.include_tasks: dir_struct_and_db_files.yml
+
+- name: "Generate sub CA CSR"
+  ansible.builtin.include_tasks: generate_csr.yml
+
+- name: "Sign sub CA certificate by root CA key"
+  ansible.builtin.include_tasks: sign_certificate.yml
+
+- name: "Generate root CA CRL"
+  ansible.builtin.include_tasks: generate_root_ca_crl.yml
+
+- name: "Generate sub CA CRL"
+  ansible.builtin.include_tasks: generate_sub_ca_crl.yml
+
+- name: "Install apache2 web-server and publish the CRT and CRL"
+  ansible.builtin.include_tasks: publish_crt_and_crl.yml
+
+- name: "Make a cron job to generate sub CA CRL periodically according to a scheduler"
+  ansible.builtin.include_tasks: make_cron_job.yml

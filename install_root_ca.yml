@@ -1,0 +1,28 @@
+- name: "Install root CA"
+  hosts: root_ca
+  vars:
+    root_ca_ca_user: "ca"
+    root_ca_ca_group: "ca"
+    root_ca_ca_name: "s1-root-ca-01"
+    root_ca_ca_domain: "nokogerra.lab"
+    root_ca_country: "RU"
+    root_ca_organization: "NOKOGERRA-LAB"
+    root_ca_cn: "s1-root-ca-01"
+    root_ca_cert_days: "3650"
+    root_ca_crl_days: "30"
+    root_ca_key_bits: "4096"
+    root_ca_encrypt_key: "yes"
+    root_ca_certs_name_constraints:
+      permitted:
+        - "DNS.0=nokogerra.lab"
+        - "DNS.1=nokogerra2.lab"
+      excluded:
+        - "IP.0=0.0.0.0/0.0.0.0"
+        - "IP.1=0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0"
+    root_ca_gen_crl_scheduler:
+      minute: "0"
+      hour: "1"
+      day: "*"
+      month: "*"
+  roles:
+    - root_ca

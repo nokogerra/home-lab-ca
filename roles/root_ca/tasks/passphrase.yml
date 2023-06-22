@@ -1,0 +1,13 @@
+# code: language=ansible
+---
+- name: "Ask for root CA private key passphrase, in case the key must be encrypted"
+  ansible.builtin.pause:
+    prompt: "Enter the root CA private key passphrase"
+    echo: false
+  register: root_private_key_pass
+  when: root_ca_encrypt_key == "yes"
+
+- name: "Show root CA private key passphrase"
+  ansible.builtin.debug:
+    msg: "{{ root_private_key_pass.user_input }}"
+  when: root_private_key_pass.user_input is defined

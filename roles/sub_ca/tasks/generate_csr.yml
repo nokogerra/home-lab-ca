@@ -1,0 +1,22 @@
+# code: language=ansible
+---
+- name: "Generate sub CA CSR and private key (in case the key is encrypted)"
+  ansible.builtin.command: openssl req -passout pass:{{ sub_private_key_pass.user_input }} -new -config /ca/openssl.cnf \
+                           -out /ca/csrs/{{ sub_ca_ca_name }}.csr -keyout /ca/private/{{ sub_ca_ca_name }}.key
+  when: sub_private_key_pass.user_input is defined
+
+- name: "Generate sub CA CSR and private key (if the key is unencrypted)"
+  ansible.builtin.command: openssl req -nodes -new -config /ca/openssl.cnf -out /ca/csrs/{{ sub_ca_ca_name }}.csr \
+                           -keyout /ca/private/{{ sub_ca_ca_name }}.key
+  when: sub_private_key_pass.user_input is not defined
+
+- name: "Fix permissions on the CSR and key"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: file
+    mode: "0600"
+    owner: "{{ sub_ca_ca_user }}"
+    group: "{{ sub_ca_ca_group }}"
+  loop:
+    - /ca/csrs/{{ sub_ca_ca_name }}.csr
+    - /ca/private/{{ sub_ca_ca_name }}.key

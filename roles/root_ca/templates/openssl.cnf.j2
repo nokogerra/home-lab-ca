@@ -1,0 +1,102 @@
+# The first part of the configuration file contains some basic CA information, such as the name and the base URL,
+# and the components of the CA's distinguished name. Because the syntax is flexible, information needs to be provided only once:
+
+[default]
+name = {{ root_ca_ca_name }}
+domain_suffix = {{ root_ca_ca_domain }}
+aia_url = http://$name.$domain_suffix/$name.crt
+crl_url = http://$name.$domain_suffix/$name.crl
+default_ca = ca_default
+name_opt = utf8,esc_ctrl,multiline,lname,align
+
+[ca_dn]
+countryName = "{{ root_ca_country }}"
+organizationName = "{{ root_ca_organization }}"
+commonName = "{{ root_ca_cn }}"
+
+# The second part directly controls the CA's operation. For full information on each setting,
+# consult the documentation for the ca command (man ca on the command line). Most of the settings are self-explanatory;
+# we mostly tell OpenSSL where we want to keep our files. Because this root CA is going to be used only for the issuance of subordinate CAs,
+# I chose to have the certificates valid for 10 years. For the signature algorithm, the secure SHA256 is used by default.
+# The default policy (policy_c_o_match) is configured so that all certificates issued from this CA have the countryName and organizationName
+# fields that match that of the CA. This wouldn't be normally done by a public CA, but it's appropriate for a private CA:
+
+[ca_default]
+home = /ca
+database = $home/db/index
+serial = $home/db/serial
+crlnumber = $home/db/crlnumber
+certificate = $home/certs/$name.crt
+private_key = $home/private/$name.key
+RANDFILE = $home/private/random
+new_certs_dir = $home/certs
+unique_subject = no
+copy_extensions = none
+default_days = {{ root_ca_cert_days }}
+default_crl_days = {{ root_ca_crl_days }}
+default_md = sha256
+policy = policy_c_o_match
+
+[policy_c_o_match]
+countryName = match
+stateOrProvinceName = optional
+organizationName = match
+organizationalUnitName = optional
+commonName = supplied
+emailAddress = optional
+
+# The third part contains the configuration for the req command, which is going to be used only once,
+# during the creation of the self-signed root certificate. The most important parts are in the extensions:
+# the basicConstraints extension indicates that the certificate is a CA, and keyUsage contains the appropriate settings for this scenario:
+
+[req]
+default_bits = {{ root_ca_key_bits }}
+encrypt_key = {{ root_ca_encrypt_key }}
+default_md = sha256
+utf8 = yes
+string_mask = utf8only
+prompt = no
+distinguished_name = ca_dn
+req_extensions = ca_ext
+
+[ca_ext]
+basicConstraints = critical,CA:true
+keyUsage = critical,keyCertSign,cRLSign
+subjectKeyIdentifier = hash
+authorityInfoAccess = @issuer_info
+crlDistributionPoints = @crl_info
+
+# The fourth part of the configuration file contains information that will be used during the construction of certificates issued by the root CA. All certificates will be CAs,
+# as indicated by the basicConstraints extension, but we set pathlen to zero, which means that further subordinate CAs are not allowed.
+# All subordinate CAs are going to be constrained, which means that the certificates they issue will be valid only for a subset of domain names and restricted uses.
+# First, the extendedKeyUsage extension specifies only clientAuth and serverAuth, which is TLS client and server authentication.
+# Second, the nameConstraints extension limits the allowed hostnames only to example.com and example.org domain names.
+# In theory, this setup enables you to give control over the subordinate CAs to someone else but still be safe in knowing that they can't issue certificates for arbitrary hostnames.
+# If you wanted, you could restrict each subordinate CA to a small domain namespace. The requirement to exclude the two IP address ranges comes from the CA/Browser Forum's Baseline Requirements,
+# which have a definition for technically constrained subordinate CAs (https://cabforum.org/baseline-requirements/). In practice, name constraints are not entirely practical,
+# because some major platforms don't currently recognize the nameConstraints extension. If you mark this extension as critical, such platforms will reject your certificates.
+# You won't have such problems if you don't mark it as critical (as in the example), but then some other platforms won't enforce it.
+
+[sub_ca_ext]
+authorityInfoAccess = @issuer_info
+authorityKeyIdentifier = keyid:always
+basicConstraints = critical,CA:true,pathlen:0
+crlDistributionPoints = @crl_info
+extendedKeyUsage = clientAuth,serverAuth
+keyUsage = critical,keyCertSign,cRLSign
+nameConstraints = @name_constraints
+subjectKeyIdentifier = hash
+
+[crl_info]
+URI.0 = $crl_url
+
+[issuer_info]
+caIssuers;URI.0 = $aia_url
+
+[name_constraints]
+{% for i in root_ca_certs_name_constraints.permitted -%}
+permitted;{{ i }}
+{% endfor %}
+{% for j in root_ca_certs_name_constraints.excluded -%}
+excluded;{{ j }}
+{% endfor %}

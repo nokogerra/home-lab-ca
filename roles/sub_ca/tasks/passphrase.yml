@@ -1,0 +1,20 @@
+# code: language=ansible
+---
+- name: "Ask for sub CA private key passphrase, in case the key must be encrypted"
+  ansible.builtin.pause:
+    prompt: "Enter the sub CA private key passphrase"
+    echo: false
+  register: sub_private_key_pass
+  when: sub_ca_encrypt_key == "yes"
+
+- name: "Show sub CA private key passphrase"
+  ansible.builtin.debug:
+    msg: "{{ sub_private_key_pass.user_input }}"
+  when: sub_private_key_pass.user_input is defined
+
+- name: "Ask for root CA private key passphrase, in case it is encrypted"
+  ansible.builtin.pause:
+    prompt: "Enter the root CA private key passphrase"
+    echo: false
+  register: root_private_key_pass
+  when: sub_ca_is_root_ca_key_encrypted == "yes"
