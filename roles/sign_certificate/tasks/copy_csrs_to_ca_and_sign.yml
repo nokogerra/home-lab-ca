@@ -1,0 +1,40 @@
+# code: language=ansible
+---
+- name: "Copy CSRs to the CA and sign them"
+  become: false
+  ansible.builtin.copy:
+    src: "/home/{{ sign_certificate_local_user }}/home_lab_ca/csrs/{{ item.cn }}.csr"
+    dest: "/ca/csrs/{{ item.cn }}.csr"
+    mode: "0600"
+    owner: "{{ sign_certificate_ca_user }}"
+    group: "{{ sign_certificate_ca_group }}"
+
+- name: "Sign a certificate by the CA key (in case the CA key is encrypted)"
+  become: false
+  ansible.builtin.command: openssl ca -batch -config /ca/openssl.cnf -in /ca/csrs/{{ item.cn }}.csr \
+                           -out /ca/certs/{{ item.cn }}.crt -extensions {{ sign_certificate_extensions }} \
+                           -noemailDN -passin pass:{{ ca_private_key_pass.user_input }}
+  when: ca_private_key_pass.user_input is defined
+
+- name: "Sign a certificate by the CA key (if the CA key is unencrypted)"
+  become: false
+  ansible.builtin.command: openssl ca -batch -config /ca/openssl.cnf -in /ca/csrs/{{ item.cn }}.csr \
+                           -out /ca/certs/{{ item.cn }}.crt -extensions {{ sign_certificate_extensions }} -noemailDN
+  when: ca_private_key_pass.user_input is not defined
+
+- name: "Fix permissions on the issued certificates"
+  become: false
+  ansible.builtin.file:
+    path: "/ca/certs/{{ item.cn }}.crt"
+    state: file
+    mode: "0640"
+    owner: "{{ sign_certificate_ca_user }}"
+    group: "{{ sign_certificate_ca_group }}"
+
+- name: "Fetch the issued certificates from a CA web page"
+  become: false
+  ansible.builtin.get_url:
+    url: http://{{ sign_certificate_ca_fqdn }}/certs/{{ item.cn }}.crt
+    dest: /home/{{ sign_certificate_local_user }}/home_lab_ca/certs/{{ item.cn }}.crt
+    mode: "0640"
+    owner: "{{ sign_certificate_local_user }}"

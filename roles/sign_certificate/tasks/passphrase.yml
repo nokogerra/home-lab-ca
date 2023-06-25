@@ -1,0 +1,10 @@
+# code: language=ansible
+---
+- name: "Ask for a CA private key passphrase, in case it is encrypted"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.pause:
+    prompt: "Enter the CA private key passphrase"
+    echo: false
+  register: ca_private_key_pass
+  when: sign_certificate_is_ca_key_encrypted == "yes"

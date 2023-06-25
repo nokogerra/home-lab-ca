@@ -1,0 +1,26 @@
+# code: language=ansible
+---
+- name: "Make openssl configs for single SAN CSRs"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.template:
+    src: openssl_single_san.cnf.j2
+    dest: /home/{{ sign_certificate_local_user }}/home_lab_ca/configs/{{ item.cn }}.cnf
+  when: item.sans is not defined
+
+- name: "Make openssl configs for multiple SANs CSRs"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.template:
+    src: openssl_multi_sans.cnf.j2
+    dest: /home/{{ sign_certificate_local_user }}/home_lab_ca/configs/{{ item.cn }}.cnf
+  when: item.sans is defined
+
+- name: "Fix permissions on openssl configs"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.file:
+    path: "/home/{{ sign_certificate_local_user }}/home_lab_ca/configs/{{ item.cn }}.cnf"
+    state: file
+    mode: "0600"
+    owner: "{{ sign_certificate_local_user }}"

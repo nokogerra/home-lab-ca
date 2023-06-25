@@ -1,0 +1,19 @@
+# code: language=ansible
+---
+- name: "Make directory structure"
+  ansible.builtin.include_tasks: make_dir_structure.yml
+
+- name: "Ask for a CA key passphrase if it is encrypted"
+  ansible.builtin.include_tasks: passphrase.yml
+
+- name: "Make openssl configs"
+  ansible.builtin.include_tasks: make_openssl_confs.yml
+  loop: "{{ sign_certificate_common_names }}"
+
+- name: "Generate CSRs and keys"
+  ansible.builtin.include_tasks: generate_csrs_and_keys.yml
+  loop: "{{ sign_certificate_common_names }}"
+
+- name: "Copy CSRs to a CA, sign certificates, publish them on http://ca_fqdn/certs and fetch the certs to a localhost"
+  ansible.builtin.include_tasks: copy_csrs_to_ca_and_sign.yml
+  loop: "{{ sign_certificate_common_names }}"
