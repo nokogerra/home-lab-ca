@@ -2,19 +2,19 @@
 ---
 - name: "Sign root CA certificate (in case the key is encrypted)"
   ansible.builtin.command: openssl ca -selfsign -batch -passin pass:{{ root_private_key_pass.user_input }} \
-                           -config /ca/openssl.cnf -in /ca/csrs/{{ root_ca_ca_name }}.csr \
-                           -out /ca/certs/{{ root_ca_ca_name }}.crt -extensions ca_ext
+                           -config /ca/openssl.cnf -in /ca/csrs/{{ root_ca_name }}.csr \
+                           -out /ca/certs/{{ root_ca_name }}.crt -extensions ca_ext
   when: root_private_key_pass.user_input is defined
 
 - name: "Sign root CA certificate (if the key is unencrypted)"
-  ansible.builtin.command: openssl ca -selfsign -batch -config /ca/openssl.cnf -in /ca/csrs/{{ root_ca_ca_name }}.csr \
-                           -out /ca/certs/{{ root_ca_ca_name }}.crt -extensions ca_ext
+  ansible.builtin.command: openssl ca -selfsign -batch -config /ca/openssl.cnf -in /ca/csrs/{{ root_ca_name }}.csr \
+                           -out /ca/certs/{{ root_ca_name }}.crt -extensions ca_ext
   when: root_private_key_pass.user_input is not defined
 
 - name: "Fix permissions on the root CA certificate"
   ansible.builtin.file:
-    path: "/ca/certs/{{ root_ca_ca_name }}.crt"
+    path: "/ca/certs/{{ root_ca_name }}.crt"
     state: file
     mode: "0640"
-    owner: "{{ root_ca_ca_user }}"
-    group: "{{ root_ca_ca_group }}"
+    owner: "{{ root_ca_user }}"
+    group: "{{ root_ca_group }}"

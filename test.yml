@@ -1,0 +1,12 @@
+- name: asd
+  hosts: localhost
+  become: false
+  tasks:
+    - name: usr
+      ansible.builtin.get_url:
+        url: http://s1-root-ca-01.nokogerra.lab/s1-root-ca-01.crt
+        dest: /tmp/s1-root-ca-01.crt
+        mode: '0640'
+    - name: asdasd
+      ansible.builtin.debug:
+        msg: "{{lookup('ansible.builtin.file', '/tmp/s1-root-ca-01.crt') }}"

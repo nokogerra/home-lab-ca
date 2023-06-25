@@ -1,17 +1,17 @@
 # code: language=ansible
 ---
 - name: "Generate a sub CA CRL (in case the sub CA key is encrypted)"
-  ansible.builtin.command: openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ sub_ca_ca_name }}.crl -passin pass:{{ sub_private_key_pass.user_input }}
+  ansible.builtin.command: openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ sub_ca_name }}.crl -passin pass:{{ sub_private_key_pass.user_input }}
   when: sub_private_key_pass.user_input is defined
 
 - name: "Generate a sub CA CRL (if the sub CA key is unencrypted)"
-  ansible.builtin.command: openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ sub_ca_ca_name }}.crl
+  ansible.builtin.command: openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ sub_ca_name }}.crl
   when: sub_private_key_pass.user_input is not defined
 
 - name: "Fix permissions on the sub CA CRL"
   ansible.builtin.file:
-    path: "/ca/{{ sub_ca_ca_name }}.crl"
+    path: "/ca/{{ sub_ca_name }}.crl"
     state: file
     mode: "0640"
-    owner: "{{ sub_ca_ca_user }}"
-    group: "{{ sub_ca_ca_group }}"
+    owner: "{{ sub_ca_user }}"
+    group: "{{ sub_ca_group }}"

@@ -2,12 +2,12 @@
 ---
 - name: "Generate root CA CSR and private key (in case the key is encrypted)"
   ansible.builtin.command: openssl req -passout pass:{{ root_private_key_pass.user_input }} -new -config /ca/openssl.cnf \
-                           -out /ca/csrs/{{ root_ca_ca_name }}.csr -keyout /ca/private/{{ root_ca_ca_name }}.key
+                           -out /ca/csrs/{{ root_ca_name }}.csr -keyout /ca/private/{{ root_ca_name }}.key
   when: root_private_key_pass.user_input is defined
 
 - name: "Generate root CA CSR and private key (if the key is unencrypted)"
-  ansible.builtin.command: openssl req -nodes -new -config /ca/openssl.cnf -out /ca/csrs/{{ root_ca_ca_name }}.csr \
-                           -keyout /ca/private/{{ root_ca_ca_name }}.key
+  ansible.builtin.command: openssl req -nodes -new -config /ca/openssl.cnf -out /ca/csrs/{{ root_ca_name }}.csr \
+                           -keyout /ca/private/{{ root_ca_name }}.key
   when: root_private_key_pass.user_input is not defined
 
 - name: "Fix permissions on the CSR and key"
@@ -15,8 +15,8 @@
     path: "{{ item }}"
     state: file
     mode: "0600"
-    owner: "{{ root_ca_ca_user }}"
-    group: "{{ root_ca_ca_group }}"
+    owner: "{{ root_ca_user }}"
+    group: "{{ root_ca_group }}"
   loop:
-    - /ca/csrs/{{ root_ca_ca_name }}.csr
-    - /ca/private/{{ root_ca_ca_name }}.key
+    - /ca/csrs/{{ root_ca_name }}.csr
+    - /ca/private/{{ root_ca_name }}.key

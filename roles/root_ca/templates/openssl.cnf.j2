@@ -2,8 +2,8 @@
 # and the components of the CA's distinguished name. Because the syntax is flexible, information needs to be provided only once:
 
 [default]
-name = {{ root_ca_ca_name }}
-domain_suffix = {{ root_ca_ca_domain }}
+name = {{ root_ca_name }}
+domain_suffix = {{ root_ca_domain }}
 aia_url = http://$name.$domain_suffix/$name.crt
 crl_url = http://$name.$domain_suffix/$name.crl
 default_ca = ca_default

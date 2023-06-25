@@ -1,9 +1,9 @@
 # code: language=ansible
 ---
-sub_ca_ca_user: "ca"
-sub_ca_ca_group: "ca"
-sub_ca_ca_name: "s1-sub-ca-01"
-sub_ca_ca_domain: "nokogerra.lab"
+sub_ca_user: "ca"
+sub_ca_group: "ca"
+sub_ca_name: "s1-sub-ca-01"
+sub_ca_domain: "nokogerra.lab"
 sub_ca_country: "RU"
 sub_ca_organization: "NOKOGERRA-LAB"
 sub_ca_cn: "s1-sub-ca-01"

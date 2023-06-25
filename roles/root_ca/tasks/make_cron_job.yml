@@ -3,8 +3,8 @@
 - name: "Make a cron job to generate root CA CRL according to a scheduler (in case the key is encrypted)"
   ansible.builtin.cron:
     name: "generate crl"
-    user: "{{ root_ca_ca_user }}"
-    job: "openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ root_ca_ca_name }}.crl -passin pass:{{ root_private_key_pass.user_input }}"
+    user: "{{ root_ca_user }}"
+    job: "openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ root_ca_name }}.crl -passin pass:{{ root_private_key_pass.user_input }}"
     state: present
     minute: "{{ root_ca_gen_crl_scheduler.minute }}"
     hour: "{{ root_ca_gen_crl_scheduler.hour }}"
@@ -15,8 +15,8 @@
 - name: "Make a cron job to generate root CA CRL according to a scheduler (if the key is unencrypted)"
   ansible.builtin.cron:
     name: "generate crl"
-    user: "{{ root_ca_ca_user }}"
-    job: "openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ root_ca_ca_name }}.crl"
+    user: "{{ root_ca_user }}"
+    job: "openssl ca -gencrl -config /ca/openssl.cnf -out /ca/{{ root_ca_name }}.crl"
     state: present
     minute: "{{ root_ca_gen_crl_scheduler.minute }}"
     hour: "{{ root_ca_gen_crl_scheduler.hour }}"
@@ -25,7 +25,7 @@
   when: root_private_key_pass.user_input is not defined
 
 - name: "Get the cron job details"
-  ansible.builtin.command: "sudo cat /var/spool/cron/crontabs/{{ root_ca_ca_user }}"
+  ansible.builtin.command: "sudo cat /var/spool/cron/crontabs/{{ root_ca_user }}"
   changed_when: false
   register: cron_job
 

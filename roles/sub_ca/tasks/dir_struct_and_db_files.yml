@@ -5,8 +5,8 @@
     path: "{{ item }}"
     state: directory
     mode: "0750"
-    owner: "{{ sub_ca_ca_user }}"
-    group: "{{ sub_ca_ca_group }}"
+    owner: "{{ sub_ca_user }}"
+    group: "{{ sub_ca_group }}"
   loop:
     - /ca
     - /ca/certs
@@ -19,8 +19,8 @@
     dest: /ca/db/crlnumber
     content: "1001"
     mode: "0600"
-    owner: "{{ sub_ca_ca_user }}"
-    group: "{{ sub_ca_ca_group }}"
+    owner: "{{ sub_ca_user }}"
+    group: "{{ sub_ca_group }}"
 
 - name: "Generate random string for serial file"
   ansible.builtin.command: openssl rand -hex 16
@@ -31,21 +31,21 @@
     dest: /ca/db/serial
     content: "{{ rand_serial.stdout }}"
     mode: "0600"
-    owner: "{{ sub_ca_ca_user }}"
-    group: "{{ sub_ca_ca_group }}"
+    owner: "{{ sub_ca_user }}"
+    group: "{{ sub_ca_group }}"
 
 - name: "Make index file"
   ansible.builtin.file:
     path: /ca/db/index
     state: touch
     mode: "0600"
-    owner: "{{ sub_ca_ca_user }}"
-    group: "{{ sub_ca_ca_group }}"
+    owner: "{{ sub_ca_user }}"
+    group: "{{ sub_ca_group }}"
 
 - name: "Make openssl.cnf for sub CA"
   ansible.builtin.template:
     src: openssl.cnf.j2
     dest: /ca/openssl.cnf
     mode: "0600"
-    owner: "{{ sub_ca_ca_user }}"
-    group: "{{ sub_ca_ca_group }}"
+    owner: "{{ sub_ca_user }}"
+    group: "{{ sub_ca_group }}"

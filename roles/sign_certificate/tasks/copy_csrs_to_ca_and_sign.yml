@@ -3,7 +3,7 @@
 - name: "Copy CSRs to the CA and sign them"
   become: false
   ansible.builtin.copy:
-    src: "/home/{{ sign_certificate_local_user }}/home_lab_ca/csrs/{{ item.cn }}.csr"
+    src: "/home/{{ localhost_user.stdout }}/home_lab_ca_local/csrs/{{ item.cn }}.csr"
     dest: "/ca/csrs/{{ item.cn }}.csr"
     mode: "0600"
     owner: "{{ sign_certificate_ca_user }}"
@@ -32,9 +32,10 @@
     group: "{{ sign_certificate_ca_group }}"
 
 - name: "Fetch the issued certificates from a CA web page"
+  delegate_to: localhost
   become: false
   ansible.builtin.get_url:
-    url: http://{{ sign_certificate_ca_fqdn }}/certs/{{ item.cn }}.crt
-    dest: /home/{{ sign_certificate_local_user }}/home_lab_ca/certs/{{ item.cn }}.crt
+    url: "http://{{ sign_certificate_ca_fqdn }}/certs/{{ item.cn }}.crt"
+    dest: "/home/{{ localhost_user.stdout }}/home_lab_ca_local/certs/{{ item.cn }}.crt"
     mode: "0640"
-    owner: "{{ sign_certificate_local_user }}"
+    owner: "{{ localhost_user.stdout }}"

@@ -1,5 +1,11 @@
 # code: language=ansible
 ---
+- name: "Get localhost current user name"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.command: whoami
+  register: localhost_user
+
 - name: "Make directory structure"
   become: false
   delegate_to: localhost
@@ -7,10 +13,10 @@
     path: "{{ item }}"
     state: directory
     mode: "0750"
-    owner: "{{ sign_certificate_local_user }}"
+    owner: "{{ localhost_user.stdout }}"
   loop:
-    - "/home/{{ sign_certificate_local_user }}/home_lab_ca"
-    - "/home/{{ sign_certificate_local_user }}/home_lab_ca/csrs"
-    - "/home/{{ sign_certificate_local_user }}/home_lab_ca/private"
-    - "/home/{{ sign_certificate_local_user }}/home_lab_ca/certs"
-    - "/home/{{ sign_certificate_local_user }}/home_lab_ca/configs"
+    - "/home/{{ localhost_user.stdout }}/home_lab_ca_local"
+    - "/home/{{ localhost_user.stdout }}/home_lab_ca_local/csrs"
+    - "/home/{{ localhost_user.stdout }}/home_lab_ca_local/private"
+    - "/home/{{ localhost_user.stdout }}/home_lab_ca_local/certs"
+    - "/home/{{ localhost_user.stdout }}/home_lab_ca_local/configs"

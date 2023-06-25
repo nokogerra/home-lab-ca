@@ -1,0 +1,7 @@
+# code: language=ansible
+---
+- name: "Final message"
+  ansible.builtin.debug:
+    msg: |
+      "Sub CA certificate is available at http://{{ sub_ca_name }}.{{ sub_ca_domain }}/{{ sub_ca_name }}.crt"
+      "Sub CA CRL is available at http://{{ sub_ca_name }}.{{ sub_ca_domain }}/{{ sub_ca_name }}.crl"

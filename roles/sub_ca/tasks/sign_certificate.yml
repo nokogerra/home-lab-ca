@@ -2,7 +2,7 @@
 ---
 - name: "Fetch sub CA CSR from sub CA to the localhost (/tmp)"
   ansible.builtin.fetch:
-    src: "/ca/csrs/{{ sub_ca_ca_name }}.csr"
+    src: "/ca/csrs/{{ sub_ca_name }}.csr"
     dest: "/tmp/"
     flat: true
 
@@ -10,8 +10,8 @@
   delegate_to: "{{ groups.root_ca[0] }}"
   become: false
   ansible.builtin.copy:
-    src: "/tmp/{{ sub_ca_ca_name }}.csr"
-    dest: "/ca/csrs/{{ sub_ca_ca_name }}.csr"
+    src: "/tmp/{{ sub_ca_name }}.csr"
+    dest: "/ca/csrs/{{ sub_ca_name }}.csr"
     mode: "0600"
     owner: "{{ sub_ca_root_ca_user }}"
     group: "{{ sub_ca_root_ca_group }}"
@@ -19,22 +19,22 @@
 - name: "Sign sub CA certificate by the root CA key (in case the root CA key is encrypted)"
   delegate_to: "{{ groups.root_ca[0] }}"
   become: false
-  ansible.builtin.command: openssl ca -batch -config /ca/openssl.cnf -in /ca/csrs/{{ sub_ca_ca_name }}.csr \
-                           -out /ca/certs/{{ sub_ca_ca_name }}.crt -extensions sub_ca_ext -noemailDN -passin pass:{{ root_private_key_pass.user_input }}
+  ansible.builtin.command: openssl ca -batch -config /ca/openssl.cnf -in /ca/csrs/{{ sub_ca_name }}.csr \
+                           -out /ca/certs/{{ sub_ca_name }}.crt -extensions sub_ca_ext -noemailDN -passin pass:{{ root_private_key_pass.user_input }}
   when: root_private_key_pass.user_input is defined
 
 - name: "Sign sub CA certificate by the root CA key (if the root CA key is unencrypted)"
   delegate_to: "{{ groups.root_ca[0] }}"
   become: false
-  ansible.builtin.command: openssl ca -batch -config /ca/openssl.cnf -in /ca/csrs/{{ sub_ca_ca_name }}.csr \
-                           -out /ca/certs/{{ sub_ca_ca_name }}.crt -extensions sub_ca_ext -noemailDN
+  ansible.builtin.command: openssl ca -batch -config /ca/openssl.cnf -in /ca/csrs/{{ sub_ca_name }}.csr \
+                           -out /ca/certs/{{ sub_ca_name }}.crt -extensions sub_ca_ext -noemailDN
   when: root_private_key_pass.user_input is not defined
 
 - name: "Fix permissions on the sub CA certificate"
   delegate_to: "{{ groups.root_ca[0] }}"
   become: false
   ansible.builtin.file:
-    path: "/ca/certs/{{ sub_ca_ca_name }}.crt"
+    path: "/ca/certs/{{ sub_ca_name }}.crt"
     state: file
     mode: "0640"
     owner: "{{ sub_ca_root_ca_user }}"
@@ -44,14 +44,14 @@
   delegate_to: "{{ groups.root_ca[0] }}"
   become: false
   ansible.builtin.fetch:
-    src: "/ca/certs/{{ sub_ca_ca_name }}.crt"
+    src: "/ca/certs/{{ sub_ca_name }}.crt"
     dest: "/tmp/"
     flat: true
 
 - name: "Copy sub CA CRT from the localhost to the sub CA"
   ansible.builtin.copy:
-    src: "/tmp/{{ sub_ca_ca_name }}.crt"
-    dest: "/ca/certs/{{ sub_ca_ca_name }}.crt"
+    src: "/tmp/{{ sub_ca_name }}.crt"
+    dest: "/ca/certs/{{ sub_ca_name }}.crt"
     mode: "0640"
-    owner: "{{ sub_ca_ca_user }}"
-    group: "{{ sub_ca_ca_group }}"
+    owner: "{{ sub_ca_user }}"
+    group: "{{ sub_ca_group }}"

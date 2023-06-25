@@ -1,9 +1,9 @@
 # code: language=ansible
 ---
-root_ca_ca_user: "ca"
-root_ca_ca_group: "ca"
-root_ca_ca_name: "s1-root-ca-01"
-root_ca_ca_domain: "nokogerra.lab"
+root_ca_user: "ca"
+root_ca_group: "ca"
+root_ca_name: "s1-root-ca-01"
+root_ca_domain: "nokogerra.lab"
 root_ca_country: "RU"
 root_ca_organization: "NOKOGERRA-LAB"
 root_ca_cn: "s1-root-ca-01"

@@ -8,7 +8,7 @@
 
 - name: "Add a ca_user to apache group (so he will be able to publish CRT and CRL in /var/www/html"
   ansible.builtin.user:
-    name: "{{ root_ca_ca_user }}"
+    name: "{{ root_ca_user }}"
     groups: www-data
     append: true
 
@@ -23,7 +23,7 @@
 - name: "Add www-data user to ca_group (so www-data will be able to read CRL and CRTs)"
   ansible.builtin.user:
     name: "www-data"
-    groups: "{{ root_ca_ca_group }}"
+    groups: "{{ root_ca_group }}"
     append: true
 
 - name: "Make symlinks for root CA CRL and CRT"
@@ -31,11 +31,11 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     state: link
-    owner: "{{ root_ca_ca_user }}"
-    group: "{{ root_ca_ca_group }}"
+    owner: "{{ root_ca_user }}"
+    group: "{{ root_ca_group }}"
   loop:
-    - { src: "/ca/{{ root_ca_ca_name }}.crl", dest: "/var/www/html/{{ root_ca_ca_name }}.crl" }
-    - { src: "/ca/certs/{{ root_ca_ca_name }}.crt", dest: "/var/www/html/{{ root_ca_ca_name }}.crt" }
+    - { src: "/ca/{{ root_ca_name }}.crl", dest: "/var/www/html/{{ root_ca_name }}.crl" }
+    - { src: "/ca/certs/{{ root_ca_name }}.crt", dest: "/var/www/html/{{ root_ca_name }}.crt" }
 
 - name: "Restart apache2"
   ansible.builtin.service:

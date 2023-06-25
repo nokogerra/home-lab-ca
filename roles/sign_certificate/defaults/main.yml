@@ -3,12 +3,11 @@
 sign_certificate_ca_fqdn: "s1-sub-ca-01.nokogerra.lab"
 sign_certificate_ca_user: "ca"
 sign_certificate_ca_group: "ca"
-sign_certificate_local_user: "kagerro"
 sign_certificate_is_ca_key_encrypted: "yes"
 sign_certificate_extensions: "server_ext"
 sign_certificate_country: "RU"
 sign_certificate_state: "Moscow"
-sign_certificate_organization: "Nokogerra home lab"
+sign_certificate_organization: "NOKOGERRA-LAB"
 sign_certificate_key_length: "2048"
 sign_certificate_common_names:
   - cn: "vasyan.nokogerra.lab"
@@ -18,5 +17,3 @@ sign_certificate_common_names:
       - "IP.1 = 10.215.102.94"
   - cn: "*.nokogerra.lab"
   - cn: taras.nokogerra.lab
-
-
