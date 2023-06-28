@@ -17,3 +17,6 @@
 - name: "Copy CSRs to a CA, sign certificates, publish them on http://ca_fqdn/certs and fetch the certs to a localhost"
   ansible.builtin.include_tasks: copy_csrs_to_ca_and_sign.yml
   loop: "{{ sign_certificate_common_names }}"
+
+- name: "Final message"
+  ansible.builtin.include_tasks: final_message.yml

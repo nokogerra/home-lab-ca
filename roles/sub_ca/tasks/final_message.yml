@@ -5,3 +5,4 @@
     msg: |
       "Sub CA certificate is available at http://{{ sub_ca_name }}.{{ sub_ca_domain }}/{{ sub_ca_name }}.crt"
       "Sub CA CRL is available at http://{{ sub_ca_name }}.{{ sub_ca_domain }}/{{ sub_ca_name }}.crl"
+      "All the further issued certificates will be available at http://{{ sub_ca_name }}.{{ sub_ca_domain }}/certs"

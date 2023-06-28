@@ -36,6 +36,7 @@
   loop:
     - { src: "/ca/{{ root_ca_name }}.crl", dest: "/var/www/html/{{ root_ca_name }}.crl" }
     - { src: "/ca/certs/{{ root_ca_name }}.crt", dest: "/var/www/html/{{ root_ca_name }}.crt" }
+    - { src: "/ca/certs", dest: "/var/www/html/certs"}
 
 - name: "Restart apache2"
   ansible.builtin.service:

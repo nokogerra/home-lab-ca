@@ -11,9 +11,15 @@ sign_certificate_organization: "NOKOGERRA-LAB"
 sign_certificate_key_length: "2048"
 sign_certificate_common_names:
   - cn: "vasyan.nokogerra.lab"
+    days: 720
+    encrypt: "yes"
     sans:
       - "DNS.1 = vasyan.nokogerra.lab"
       - "DNS.2 = vasyanpro.nokogerra.lab"
       - "IP.1 = 10.215.102.94"
   - cn: "*.nokogerra.lab"
+    days: 30
+    encrypt: "no"
   - cn: taras.nokogerra.lab
+    days: 60
+    encrypt: "no"

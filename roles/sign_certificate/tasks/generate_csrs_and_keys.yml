@@ -1,11 +1,30 @@
 # code: language=ansible
 ---
-- name: "Generate CSRs and keys based on the openssl configs"
+- name: "Ask for a client private key passphrase, in case it must be encrypted"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.pause:
+    prompt: "Enter {{ item.cn }} private key passphrase"
+    echo: false
+  register: client_private_key_pass
+  when: item.encrypt == "yes"
+
+- name: "Generate CSRs and keys based on the openssl configs (in case the client key must be encrypted)"
+  become: false
+  delegate_to: localhost
+  ansible.builtin.command: openssl req -passout pass:{{ client_private_key_pass.user_input }} \
+           -config /home/{{ localhost_user.stdout }}/home_lab_ca_local/configs/{{ item.cn }}.cnf \
+           -new -out /home/{{ localhost_user.stdout }}/home_lab_ca_local/csrs/{{ item.cn }}.csr \
+           -newkey rsa:{{ sign_certificate_key_length }} -keyout /home/{{ localhost_user.stdout }}/home_lab_ca_local/private/{{ item.cn }}.key
+  when: client_private_key_pass.user_input is defined
+
+- name: "Generate CSRs and keys based on the openssl configs (if the client key must not be encrypted)"
   become: false
   delegate_to: localhost
   ansible.builtin.command: openssl req -config /home/{{ localhost_user.stdout }}/home_lab_ca_local/configs/{{ item.cn }}.cnf \
            -new -out /home/{{ localhost_user.stdout }}/home_lab_ca_local/csrs/{{ item.cn }}.csr \
            -newkey rsa:{{ sign_certificate_key_length }} -nodes -keyout /home/{{ localhost_user.stdout }}/home_lab_ca_local/private/{{ item.cn }}.key
+  when: client_private_key_pass.user_input is not defined
 
 - name: "Fix permissions on the CSR"
   become: false
