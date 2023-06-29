@@ -1,0 +1,19 @@
+# code: language=ansible
+---
+- name: "Revoke a certificate by a given serial number"
+  become: false
+  ansible.builtin.command: openssl ca -revoke -config /ca/openssl.cnf /ca/certs/{{ item }}.pem -crl_reason {{ revoke_certificate_reason }}
+  loop: "{{ revoke_certificate_serial }}"
+  when: revoke_certificate_serial is defined
+
+- name: "Get serial numbers by certificate common names"
+  become: false
+  ansible.builtin.shell: bash -c "grep "{{ item }}" /ca/db/index | grep "^V" | cut -d$'\t' -f 4"
+  register: serial_numbers
+  loop: "{{ revoke_certificate_cn }}"
+  changed_when: false
+
+- name: "Revoke a certificate by a derived serial name"
+  become: false
+  ansible.builtin.command: openssl ca -revoke /ca/certs/{{ item }}.pem -config /ca/openssl.cnf -crl_reason {{ revoke_certificate_reason }}
+  loop: "{{ serial_numbers['results'] | map(attribute='stdout_lines') | flatten }}"

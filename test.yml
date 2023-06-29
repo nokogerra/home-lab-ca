@@ -1,12 +1,29 @@
 - name: asd
-  hosts: localhost
+  hosts: sub_ca
   become: false
+  vars:
+    my_var:
+      - "*.nokogerra.lab"
+      - "vasyan.nokogerra.lab"
   tasks:
-    - name: usr
-      ansible.builtin.get_url:
-        url: http://s1-root-ca-01.nokogerra.lab/s1-root-ca-01.crt
-        dest: /tmp/s1-root-ca-01.crt
-        mode: '0640'
+    - name: usr1
+      ansible.builtin.shell: bash -c "grep "{{ item }}" /ca/db/index | grep "^V" | cut -d$'\t' -f 4"
+      register: result1
+      loop: "{{ my_var }}"
+    - name: debug1
+      debug:
+        msg: "{{ result1.results[0].stdout_lines | join('\n') }}"
+    - name: debug2
+      debug:
+        msg: "{{ result1['results'] | map(attribute='stdout_lines') | flatten }}"
     - name: asdasd
-      ansible.builtin.debug:
-        msg: "{{lookup('ansible.builtin.file', '/tmp/s1-root-ca-01.crt') }}"
+      command: echo {{ item }}.pem
+      loop: "{{ result1['results'] | map(attribute='stdout_lines') | flatten }}"
+#    - name: usr2
+#      ansible.builtin.shell: bash -c "grep "^V*.{{ my_var }}" /ca/db/index | cut -d$'\t' -f 4"
+#      register: result2
+#      loop: "{{ my_var }}"
+#      when: my_var | !search("*")
+#    - name: debug2
+#      debug:
+#        msg: "{{ result2.stdout_lines }}"

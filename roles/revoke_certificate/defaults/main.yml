@@ -1,0 +1,10 @@
+revoke_certificate_ca_user: "ca"
+revoke_certificate_ca_group: "ca"
+revoke_certificate_is_ca_key_encrypted: "yes"
+revoke_certificate_reason: "keyCompromise"
+revoke_certificate_cn:
+  - "vasyan.nokogerra.lab"
+  - "taras.nokogerra.lab"
+
+revoke_certificate_serial:
+  - "05125D1517AFEF75EF7C281C9DDE4D8977532A8C"
