@@ -1,3 +1,5 @@
+# code: language=ansible
+---
 - name: "Install sub CA"
   hosts: sub_ca
   vars:

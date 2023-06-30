@@ -1,3 +1,5 @@
+# code: language=ansible
+---
 - name: "Install root CA"
   hosts: root_ca
   vars:

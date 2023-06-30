@@ -1,10 +1,21 @@
 # code: language=ansible
 ---
-- name: "Revoke a certificate by a given serial number"
+- name: "Revoke a certificate by a given serial number (in case the CA key is encrypted)"
+  become: false
+  ansible.builtin.command: openssl ca -revoke -config /ca/openssl.cnf /ca/certs/{{ item }}.pem -crl_reason {{ revoke_certificate_reason }} \
+                           -passin pass:{{ ca_private_key_pass.user_input }}
+  loop: "{{ revoke_certificate_serial }}"
+  when:
+    - revoke_certificate_serial is defined
+    - ca_private_key_pass.user_input is defined
+
+- name: "Revoke a certificate by a given serial number (if the CA key is unencrypted)"
   become: false
   ansible.builtin.command: openssl ca -revoke -config /ca/openssl.cnf /ca/certs/{{ item }}.pem -crl_reason {{ revoke_certificate_reason }}
   loop: "{{ revoke_certificate_serial }}"
-  when: revoke_certificate_serial is defined
+  when:
+    - revoke_certificate_serial is defined
+    - ca_private_key_pass.user_input is not defined
 
 - name: "Get serial numbers by certificate common names"
   become: false
@@ -12,8 +23,21 @@
   register: serial_numbers
   loop: "{{ revoke_certificate_cn }}"
   changed_when: false
+  when: revoke_certificate_cn is defined
 
-- name: "Revoke a certificate by a derived serial name"
+- name: "Revoke a certificate by a derived serial number (in case the CA key is encrypted)"
+  become: false
+  ansible.builtin.command: openssl ca -revoke /ca/certs/{{ item }}.pem -config /ca/openssl.cnf -crl_reason {{ revoke_certificate_reason }} \
+                           -passin pass:{{ ca_private_key_pass.user_input }}
+  loop: "{{ serial_numbers['results'] | map(attribute='stdout_lines') | flatten }}"
+  when:
+    - serial_numbers is defined
+    - ca_private_key_pass.user_input is defined
+
+- name: "Revoke a certificate by a derived serial number (if the CA key is unencrypted)"
   become: false
   ansible.builtin.command: openssl ca -revoke /ca/certs/{{ item }}.pem -config /ca/openssl.cnf -crl_reason {{ revoke_certificate_reason }}
   loop: "{{ serial_numbers['results'] | map(attribute='stdout_lines') | flatten }}"
+  when:
+    - serial_numbers is defined
+    - ca_private_key_pass.user_input is not defined

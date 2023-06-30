@@ -1,0 +1,13 @@
+# code: language=ansible
+---
+- name: "Ask for a CA key passphrase if it is encrypted"
+  ansible.builtin.include_tasks: passphrase.yml
+
+- name: "Revoke certificates"
+  ansible.builtin.include_tasks: revoke_certificate.yml
+
+- name: "Generate and publish CA CRL"
+  ansible.builtin.include_tasks: generate_crl.yml
+
+- name: "Final message"
+  ansible.builtin.include_tasks: final_message.yml

@@ -1,3 +1,5 @@
+# code: language=ansible
+---
 - name: "Generate CSRs, keys and sign certificates by a home lab CA"
   hosts: sub_ca
   vars:
