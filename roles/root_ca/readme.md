@@ -2,6 +2,7 @@
 > **Do not change the ansible inventory structure, group names must remain the same. Groups are used for delegate_to in some tasks**
 > Just put root CA FQDN or IP into root_ca group.
 > Otherwise, you should search/replace all entries of the ansible group names in all home-lab-ca roles.<br />
+
 This is the first role of the home-lab-ca bundle and it installs root CA based on openssl.<br />
 There must be a user **with primary group** on a target OS, which will be a CA administrator, **it should be be used as an ansible user**, it also must be a **sudoer**. The play, which installs root CA, must be executed with sudo (root) privileges, all file/dir permissions are configured appropriately for a CA administrator during execution.<br />
 **It is assumed all the further CA operations, like certificate signing/revocation operations, CRL generation, etc, should be executed by a CA administrator without root privileges, it means "become:false" in ansible.**<br />

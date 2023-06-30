@@ -2,6 +2,7 @@
 > **Do not change the ansible inventory structure, group names must remain the same. Groups are used for "delegate_to" in some tasks**
 > Just put root CA or sub CA FQDNs or IPs into root_ca or sub_ca group accodringly.
 > Otherwise, you should search/replace all entries of the ansible group names in all home-lab-ca roles.<br />
+
 This is the third role of the home-lab-ca bundle and it generates CSRs and keys on a localhost, then transfers the CSRs to a CA, sign certificates and fetch them from the CA to the localhost. The target of a playbook, based on this role, is a CA, it doesn't matter which one (root or sub). I prefer to use ansible inventory group name.<br />
 CA administrator must be used as an ansible user with "become:false", so **without root privileges**.<br />
 I use ssh key pair to authenticate as a "ca" user on a remote host.
