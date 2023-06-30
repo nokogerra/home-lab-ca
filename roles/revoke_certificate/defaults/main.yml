@@ -9,4 +9,4 @@ revoke_certificate_cn:
   - "vasyan.nokogerra.lab"
   - "taras.nokogerra.lab"
 revoke_certificate_serial:
-  - "05125D1517AFEF75EF7C281C9DDE4D8977532A8C"
+  - "50E6C1E30FCDC60E851239992BAE041711CE79C6"

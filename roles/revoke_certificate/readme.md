@@ -39,6 +39,8 @@ revoke_certificate_reason: "keyCompromise"
 revoke_certificate_ca_name: "s1-sub-ca-01"
 
 # Common names of certificates to be revoked
+# be careful, if you define this variable,
+# all certificates with specified CNs will be revoked
 revoke_certificate_cn:
   - "vasyan.nokogerra.lab"
   - "taras.nokogerra.lab"
@@ -48,5 +50,8 @@ revoke_certificate_cn:
 # of the issuer. In case it is already revoked (R), the task will fail.
 revoke_certificate_serial:
   - "05125D1517AFEF75EF7C281C9DDE4D8977532A8C"
+
+# You can use both "revoke_certificate_cn" and "revoke_certificate_serial"
+# variables at the same time, or only one of them
 ```
 Take a look at **tests**.

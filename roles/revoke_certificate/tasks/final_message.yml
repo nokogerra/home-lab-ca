@@ -1,27 +1,29 @@
 # code: language=ansible
 ---
-- name: "Get entries of certificates revoked by given serial numbers"
-  become: false
-  ansible.builtin.command: grep {{ item }} /ca/db/index
-  loop: "{{ revoke_certificate_serial }}"
-  register: revoked1
-
-- name: "Get entries of certificates revoked by derived serial numbers"
-  become: false
-  ansible.builtin.command: grep {{ item }} /ca/db/index
-  loop: "{{ serial_numbers['results'] | map(attribute='stdout_lines') | flatten }}"
-  register: revoked2
+- name: "Final message"
+  ansible.builtin.debug:
+    msg: |
+      You have revoked the following certificates:
+      "{{ revoke_certificate_serial }}"
+      "{{ serial_numbers['results'] | map(attribute='stdout_lines') | flatten }}"
+  when:
+    - revoke_certificate_serial is defined
+    - serial_numbers is defined
 
 - name: "Final message"
   ansible.builtin.debug:
     msg: |
-      You just revoked the following certificates by given serial numbers:
-      {{ revoked1.stdout_lines }}
-  when: revoked1 is defined
+      You have revoked the following certificates:
+      "{{ revoke_certificate_serial }}"
+  when:
+    - revoke_certificate_serial is defined
+    - serial_numbers is not defined
 
 - name: "Final message"
   ansible.builtin.debug:
     msg: |
-      You just revoked the following certificates by derived serial numbers:
-      {{ revoked2.stdout_lines }}
-  when: revoked2 is defined
+      You have revoked the following certificates:
+      "{{ serial_numbers['results'] | map(attribute='stdout_lines') | flatten }}"
+  when:
+    - revoke_certificate_serial is not defined
+    - serial_numbers is defined
