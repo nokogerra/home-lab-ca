@@ -1,5 +1,6 @@
 # Home lab sub CA
-> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for "delegate_to" in some tasks**
+> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for "delegate_to" in some tasks**. Actually, inventory group names are used inside roles only in case of "sub_ca", however it's better to keep the ansible inventory unified.
+> Just put root CA FQDN or IP into root_ca group.
 > Just put root CA and sub CA FQDNs or IPs into root_ca and sub_ca groups accodringly.
 > Otherwise, you should search/replace all entries of the ansible inventory group names in all home-lab-ca roles.<br />
 
@@ -26,7 +27,7 @@ I use ssh key pair to authenticate as a "ca" user on a remote host.
 5. Fetch sub CA CSR to a localhost, copy it to a root CA, sign a sub CA certificate, fetch the sub CA certificate to a localhost, copy it to the sub CA host;
 6. Generate root and sub CAs CRLs;
 7. Install apache2, sub CA CRL and CRT will be published via this web-server;
-8. Add ca_user to www-data group, so he will be able to publish CRT and CRL in /var/www/html (via symlinks); add www-data user to ca_group, so this user will be able to read /ca/root_ca.crl and /ca/certs/root_ca.crt; restart apache2 service;
+8. Add ca_user to www-data group, so he will be able to publish CRT and CRL in /var/www/html (via symlinks); add www-data user to ca_group, so this user will be able to read /ca/sub_ca.crl and /ca/certs/sub_ca.crt; restart apache2 service;
 9. Make a cron job to generate CRL periodically.
 ### Openssl policy
 Make sure you use the same **organizationName** and **countryName** in all further certificate operations, because these options are enforced:
@@ -42,12 +43,12 @@ emailAddress = optional
 Otherwise, change them to 'optional'.
 ### Variables
 ```
-# sub CA administrator and his primary group:
+# sub CA administrator and its primary group:
 sub_ca_user: "ca"
 sub_ca_group: "ca"
 
 # sub CA name, must be a real hostname
-sub_ca_name: "s1-root-ca-01"
+sub_ca_name: "s1-sub-ca-01"
 
 # sub CA domain suffix, must be your domain
 sub_ca_domain: "nokogerra.lab"
@@ -74,7 +75,7 @@ sub_ca_cert_days: "1095"
 # sub CA CRL validity period
 sub_ca_crl_days: "7"
 
-# sub CA private key length (will be user in openssl.cnf)
+# sub CA private key length
 sub_ca_key_bits: "2048"
 
 # sub CA private key encryption, valid values: "yes" or "no"
@@ -97,7 +98,7 @@ sub_ca_certs_name_constraints:
 # Generate CRL cron job scheduler (runs once an hour in this example):
 sub_ca_gen_crl_scheduler:
   minute: "0"
-  hour: "1"
+  hour: "*"
   day: "*"
   month: "*"
 

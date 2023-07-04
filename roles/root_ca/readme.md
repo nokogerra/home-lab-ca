@@ -1,5 +1,5 @@
 # Home lab root CA
-> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for delegate_to in some tasks**
+> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for delegate_to in some tasks**. Actually, inventory group names are used inside roles only in case of "sub_ca", however it's better to keep the ansible inventory unified.
 > Just put root CA FQDN or IP into root_ca group.
 > Otherwise, you should search/replace all entries of the ansible inventory group names in all home-lab-ca roles.<br />
 
