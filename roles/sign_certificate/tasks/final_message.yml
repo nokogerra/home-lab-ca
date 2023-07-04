@@ -5,3 +5,4 @@
     msg: |
       "Your certificates are stored at localhost /home/{{ localhost_user.stdout }}/home_lab_ca_local/certs."
       "Your certificates are also available at http://{{ sign_certificate_ca_fqdn }}/certs."
+      "For keys check /home/{{ localhost_user.stdout }}/home_lab_ca_local/private."

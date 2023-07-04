@@ -1,7 +1,6 @@
 # Home lab root CA
-> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for delegate_to in some tasks**. Actually, inventory group names are used inside roles only in case of "sub_ca", however it's better to keep the ansible inventory unified.
+> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for delegate_to in some tasks**. Actually, inventory group names are used only in "sign_certificate.yml" and "generate_root_ca_crl.yml" tasks of "sub_ca" role and, obviously, in playbooks. So, you can change the inventory group names, but in that case you have to change those tasks accordingly.
 > Just put root CA FQDN or IP into root_ca group.
-> Otherwise, you should search/replace all entries of the ansible inventory group names in all home-lab-ca roles.<br />
 
 This is the first role of the home-lab-ca bundle and it installs root CA based on openssl.<br />
 There must be a user **with primary group** on a target OS, which will be a CA administrator, **it should be used as an ansible user**, it also must be a **sudoer**. The play, which installs root CA, must be executed with sudo (root) privileges, all file/dir permissions are configured appropriately for a CA administrator during execution.<br />

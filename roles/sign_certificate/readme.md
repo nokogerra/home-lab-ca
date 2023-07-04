@@ -1,9 +1,8 @@
 # Home lab sign certificates
-> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for "delegate_to" in some tasks**
+> **Do not change the ansible inventory structure, group names must remain the same. Groups are used for "delegate_to" in some tasks**. Actually, inventory group names are used only in "sign_certificate.yml" and "generate_root_ca_crl.yml" tasks of "sub_ca" role and, obviously, in playbooks. So, you can change the inventory group names, but in that case you have to change those tasks accordingly.
 > Just put root CA or sub CA FQDNs or IPs into root_ca or sub_ca group accodringly.
-> Otherwise, you should search/replace all entries of the ansible group names in all home-lab-ca roles.<br />
 
-This is the third role of the home-lab-ca bundle and it generates CSRs and keys on a localhost, then transfers the CSRs to a CA, sign certificates and fetch them from the CA to the localhost. The target of a playbook, based on this role, is a CA, it doesn't matter which one (root or sub). I prefer to use ansible inventory group name.<br />
+This is the third role of the home-lab-ca bundle and it generates CSRs and keys on a localhost (ansible controller), then transfers the CSRs to a CA, sign certificates and fetch them from the CA (via http) to the localhost. The target of a playbook, based on this role, is a CA. If you want to issue a sub CA certificate, your target is a root CA, in other cases - sub CA. I prefer to use ansible inventory group name.<br />
 CA administrator must be used as an ansible user with "become:false", so **without root privileges**.<br />
 I use ssh key pair to authenticate as a "ca" user on a remote host.
 ### Process overview
@@ -47,7 +46,6 @@ keyUsage = critical,keyCertSign,cRLSign
 ...
 subjectKeyIdentifier = hash
 ```
-
 ### Variables
 ```
 # CA FQDN, from which the issued certificates will be fetched:
@@ -64,7 +62,7 @@ sign_certificate_is_ca_key_encrypted: "yes"
 
 # An extension, which will be used for all the certificates,
 # that is going to be issued during the current playbook run
-# "sub_ca_ext" must be used only for reissuing a sub CA certificate (against a root CA)
+# "sub_ca_ext" must be used only for issuing a sub CA certificate (against a root CA)
 sign_certificate_extensions: "server_ext"
 
 # In case, you haven't modify the policy in openssl.cnf.j2 of root and sub CAs

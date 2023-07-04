@@ -1,0 +1,18 @@
+# code: language=ansible
+---
+- name: "Revoke certificates"
+  become: false
+  hosts: sub_ca
+  vars:
+    revoke_certificate_ca_user: "ca"
+    revoke_certificate_ca_group: "ca"
+    revoke_certificate_is_ca_key_encrypted: "yes"
+    revoke_certificate_reason: "keyCompromise"
+    revoke_certificate_ca_name: "s1-sub-ca-01"
+    revoke_certificate_cn:
+      - "vasyan.nokogerra.lab"
+      - "taras.nokogerra.lab"
+    revoke_certificate_serial:
+      - "50E6C1E30FCDC60E851239992BAE041711CE79C6"
+  roles:
+    - revoke_certificate

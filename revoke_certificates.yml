@@ -1,6 +1,0 @@
-# code: language=ansible
----
-- name: "Revoke certificates"
-  hosts: sub_ca
-  roles:
-    - revoke_certificate

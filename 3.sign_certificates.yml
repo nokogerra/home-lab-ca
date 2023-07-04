@@ -1,6 +1,7 @@
 # code: language=ansible
 ---
 - name: "Generate CSRs, keys and sign certificates by a home lab CA"
+  become: false
   hosts: sub_ca
   vars:
     sign_certificate_ca_fqdn: "s1-sub-ca-01.nokogerra.lab"
