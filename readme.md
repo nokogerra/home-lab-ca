@@ -5,6 +5,7 @@ This bundle is intended to provide a simple Certificate Authority for non-produc
 - sub_ca. It installs subordinate CA;
 - sign_certificate. It signs certificates with specified data;
 - revoke_certificate. It revokes certificates.
+
 Detailed description for each role is available in the corresponding directories (e.g. roles/root_ca).<br />
 ### What you will get
 You gonna get 2 CAs: root CA and sub CA. Actually, number of sub CAs is optional, however I don't think anyone needs more than one sub CA in a home lab.<br />
