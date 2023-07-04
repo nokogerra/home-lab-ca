@@ -20,7 +20,7 @@ On a CA file system there is /ca directory:
 - /ca/csrs - CSR location (for CA own CSR and client CSRs);
 - /ca/db - database files location, /ca/db/index is a certificate DB.
 Also you will get an automated way to issue and revoke certificates with playbooks.<br />
-**All tasks of generating CSRs and keys, signing certificates, generating CRLs, etc, are NOT IDEMPOTENT**.
+**All tasks of generating CSRs and keys, signing certificates, generating CRLs, etc, are NOT IDEMPOTENT**. It means if you already have an issued certificate for "host.domain.lab", and run a playbook to sign a certificate with the same common name, it will generate new CSR/key/cert for that CN, but the old one won't be revoked automatically.
 ### Common guidance
 1. Make sure you have DNS in your lab, and all the names are resolvable;
 2. Role sub_ca (installs sub CA) requires access to both root CA and sub CA, so CA user (it's also ansible user) and its primary group should be the same on both CAs, otherwise you will be forced to configure other user in root CA tasks of this role. I haven't tested this bundle with different CA users for root and sub CAs. If you are concerned about a security part (not a case in a home lab, I guess), then you can use different ssh keys for the same user, e.g.:

@@ -16,7 +16,7 @@
     sign_certificate_common_names:
       - cn: "vasyan.nokogerra.lab"
         days: 720
-        encrypt: "no"
+        encrypt: "yes"
         sans:
           - "DNS.1 = vasyan.nokogerra.lab"
           - "DNS.2 = vasyanpro.nokogerra.lab"
