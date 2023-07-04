@@ -1,5 +1,5 @@
 # Home lab CA
-OS: Ubuntu focal/jammy (20.04/22.04)/<br />
+OS: **Ubuntu focal/jammy (20.04/22.04)**.<br />
 This bundle is intended to provide a simple Certificate Authority for non-production purposes, for example for a home lab. It is based on openssl, however openssl ansible modules are not used to make the process more transparent. The bundle consists of 4 roles that are closely connected to each other:
 - root_ca. It installs root CA;
 - sub_ca. It installs subordinate CA;
