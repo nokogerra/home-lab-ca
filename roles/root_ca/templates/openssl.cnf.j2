@@ -94,9 +94,15 @@ URI.0 = $crl_url
 caIssuers;URI.0 = $aia_url
 
 [name_constraints]
+{% if root_ca_certs_name_constraints.excluded is defined %}
 {% for i in root_ca_certs_name_constraints.permitted -%}
 permitted;{{ i }}
 {% endfor %}
 {% for j in root_ca_certs_name_constraints.excluded -%}
 excluded;{{ j }}
 {% endfor %}
+{% else %}
+{% for i in root_ca_certs_name_constraints.permitted -%}
+permitted;{{ i }}
+{% endfor %}
+{% endif %}

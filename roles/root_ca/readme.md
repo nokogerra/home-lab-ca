@@ -85,13 +85,20 @@ root_ca_encrypt_key: "yes"
 # name constraints (soft!), means for which names and IPs
 # this root CA will be able to sign certificates (basically sub CA names)
 # your home lab domain is recommended
+# "permitted" part is mandatory, "excluded" is optional
+#
+# BE CAREFUL: if soft "excluded" with IP ranges is present in a CA openssl.cnf
+# AND you will sign a certificate with an IP address in its SANs, some clients (e.g. Firefox)
+# may declare, that your CA is not permitted to issue certificates with such names (IP actually)
+# error "SEC_ERROR_CERT_NOT_IN_NAME_SPACE"
+# so, if you need to issue certificates with IPs in SANs, then keep "excluded" part commented out
 root_ca_certs_name_constraints:
   permitted:
     - "DNS.0=nokogerra.lab"
     - "DNS.1=nokogerra2.lab"
-  excluded:
-    - "IP.0=0.0.0.0/0.0.0.0"
-    - "IP.1=0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0"
+#  excluded:
+#    - "IP.0=0.0.0.0/0.0.0.0"
+#    - "IP.1=0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0"
 
 # Generate CRL cron job scheduler (runs once a day in this example):
 root_ca_gen_crl_scheduler:

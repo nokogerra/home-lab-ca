@@ -18,9 +18,9 @@
       permitted:
         - "DNS.0=nokogerra.lab"
         - "DNS.1=nokogerra2.lab"
-      excluded:
-        - "IP.0=0.0.0.0/0.0.0.0"
-        - "IP.1=0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0"
+#      excluded:
+#        - "IP.0=0.0.0.0/0.0.0.0"
+#        - "IP.1=0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0"
     sub_ca_gen_crl_scheduler:
       minute: "0"
       hour: "*"
